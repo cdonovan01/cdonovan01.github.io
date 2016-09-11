@@ -1,0 +1,322 @@
+﻿<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Homeschool Tracking</title>
+    <!--<script src="js/libs/jquery-1.7.1.min.js"></script>-->
+    <script src="js/libs/jquery-1.7.1.min.js"></script>
+    <link href="css/style.css" rel="stylesheet" type="text/css" />
+    <!-- scripts concatenated and minified via build script -->
+    <!--<script src="js/plugins.js"></script>-->
+    <script src="js/libs/jquery.validate.min.js"></script>
+    <link href="js/libs/jquery-ui/jquery-ui.css" rel="stylesheet" />
+    <!--<script src="js/libs/jquery-ui/external/jquery/jquery.js"></script>-->
+    <script src="js/libs/jquery-ui/jquery-ui.js"></script>
+    <script src="js/script.js"></script>
+    <script type="text/javascript">
+	var selectedStudent;
+        function updateRecordsView(student) {
+            //alert(student)
+			selectedStudent = student;
+            var url = "https://docs.google.com/spreadsheets/d/1KbEc960RT_lqJ7w6jyuKtoqTg_z2W71ScCVVmmLsn3Q/gviz/tq?tqx=out:html&tq=select+B,C,D,H,E,F+where+B=%22" + student + "%22+order+by+C+desc+limit+30"
+            $('#iframeRecords').attr("src", url);
+            $('#entry_983069968').val(student);
+            $('#pic').attr("src", "img/" + student + ".jpg");
+            $('.entryfield').val('');
+            $('#entry_1788218458_SchoolDate').val(getTodaysDate());
+        }
+		function updateRecordsViewSubject(subject) {
+            //alert(subject)
+            var url = "https://docs.google.com/spreadsheets/d/1KbEc960RT_lqJ7w6jyuKtoqTg_z2W71ScCVVmmLsn3Q/gviz/tq?tqx=out:html&tq=select+B,C,D,H,E,F+where+B=%22" + selectedStudent + "%22+And+D=%22"+subject+"%22+order+by+C+desc+limit+30"
+            $('#iframeRecords').attr("src", url);
+        }
+        $(document).ready(function () {
+            $("#entryForm").validate();
+        });
+
+        function postToGoogle() {
+            try {
+
+                window.scrollTo(0, 0);
+                if ($('#entryForm').valid()) {
+
+                    var student = $('#entry_983069968').val();
+
+                    $('#entry_1788218458').val($('#entry_1788218458_SchoolDate').val());
+
+                    if ($('#entry_1814284914_Subject').val() == "Other") {
+                        $('#entry_1814284914').val($('#entry_1814284914_Subject_Other').val());
+                    } else { $('#entry_1814284914').val($('#entry_1814284914_Subject').val()); }
+
+                    if ($('#entry_1272761553_EntryType').val() == "Other") {
+                        $('#entry_1272761553').val($('#entry_1272761553_EntryType_Other').val());
+                    } else { $('#entry_1272761553').val($('#entry_1272761553_EntryType').val()); }
+
+                    if ($('#entry_723042042_TextBook').val() == "Other") {
+                        $('#entry_723042042').val($('#entry_723042042_TextBook_Other').val());
+                    }
+                    else { $('#entry_723042042').val($('#entry_723042042_TextBook').val()); }
+
+                    $('#entry_118763302').val($('#entry_118763302_Lesson').val());
+                    $('#entry_590904944').val($('#entry_590904944_AdditionalNotes').val());
+
+                    $('#btnPostToGoogle').click();
+                    $('#btnResetSubmitForm').click();
+                    //$('#btnResetEntryForm').click();
+					
+					//Reset Some Fields
+					$('#entry_1814284914_Subject').val('');
+					$('#entry_1814284914_Subject_Other').val('');
+					$('#entry_1272761553_EntryType').val('');
+					$('#entry_723042042_TextBook').val('');
+					$('#entry_118763302_Lesson').val('');
+					$('#entry_590904944_AdditionalNotes').val('');
+					
+                    $('#entry_1788218458_SchoolDate').val(getTodaysDate());
+					updateRecordsView(student);
+                    //$('input[name=student][value='+student+']').attr('checked', true); - works but is too fast so new entry doesn't show
+                }
+                else {
+                    alert('Please fill out all required fields.\n\nThank You.');
+                }
+
+            }
+            catch (e) { alert("Page Error: " + e) }
+        }
+
+        function getDDValues() {
+            var student = "";
+            $.getJSON("https://docs.google.com/spreadsheets/d/1KbEc960RT_lqJ7w6jyuKtoqTg_z2W71ScCVVmmLsn3Q/gviz/tq?tqx=out:json&tq=select+D,H,E,F+where+B=%"+student+"%22", function (data) {
+                var items = [];
+                $.each(data, function (key, val) {
+                    items.push("<li id='" + key + "'>" + val + "</li>");
+                });
+
+                $("<ul/>", {
+                    "class": "my-new-list",
+                    html: items.join("")
+                }).appendTo("body");
+            });
+
+        }
+
+
+
+        function checkField(obj) {
+
+            $('.Book').hide();
+            var key = '.' + $('#entry_983069968').val() + $('#entry_1814284914_Subject').val();
+            $(key).show();
+            checkFieldOther(obj);
+        }
+        function checkFieldOther(obj) {
+            if (obj.options[obj.selectedIndex].text == "Other")
+            { $('#' + obj.id + '_Other_div').show(); } else { $('#' + obj.id + '_Other_div').hide(); $('#' + obj.id + '_Other').val(''); }
+        }
+
+        $(function () {
+            $("#entry_1788218458_SchoolDate").datepicker({
+                dateFormat: 'yy-mm-dd'
+            });  //School Date field
+
+            $('#todaysdate').html(getTodaysDate());
+            $('#entry_1788218458_SchoolDate').val(getTodaysDate());
+        });
+        function getTodaysDate()
+        { return $.datepicker.formatDate('yy-mm-dd', new Date()); }
+    </script>
+    <!-- end scripts -->
+</head>
+<body style="background-color:aliceblue">
+    <iframe id="hidden_iframe" name="hidden_iframe" style="display:none"></iframe>
+    <form style="display:none" id="submitForm" action="https://docs.google.com/forms/d/13ag94IbQISNzXHxfauFeQt2_6GZtcuNj799ArCsyl6E/formResponse" method="POST" target="hidden_iframe" onsubmit="sent_form=true">
+        Name
+        <input name="entry.983069968" value="" id="entry_983069968">
+        Date
+        <input name="entry.1788218458" value="" id="entry_1788218458">
+        Subject
+        <input name="entry.1814284914" value="" id="entry_1814284914">
+        Entry Type
+        <input name="entry.1272761553" value="" id="entry_1272761553">
+        Text Book
+        <input name="entry.723042042" value="" id="entry_723042042">
+        Lesson
+        <input name="entry.118763302" value="" id="entry_118763302">
+        Additional Notes
+        <input name="entry.590904944" value="" id="entry_590904944">
+
+        <input id="btnPostToGoogle" type="submit" value="Add" /><input id="btnResetSubmitForm" type="reset" value="reset" />
+    </form>
+    <form class="" id="entryForm">
+        <h1>Donovan Home School Tracker</h1><h3>Today's Date: <span id="todaysdate"></span></h3>
+        <table style="width: 950px">
+            <tr>
+                <td style="padding-right: 20px;width:150px">
+                    <label class="q-item-label" for="entry_468125125">
+                        Student Name:
+                    </label>
+                    <div class="secondary-text" dir="ltr"></div>
+                    <div>
+                        <input type="radio" name="student" class="required" value="Brenden" onclick="updateRecordsView(this.value)">Brenden<br>
+                        <input type="radio" name="student" value="McKayla" onclick="updateRecordsView(this.value)">McKayla<br>
+                        <input type="radio" name="student" value="Caiden" onclick="updateRecordsView(this.value)">Caiden<br>
+                        <input type="radio" name="student" value="Samantha" onclick="updateRecordsView(this.value)">Samantha<br>
+                        <input type="radio" name="student" value="Chris" onclick="updateRecordsView(this.value)">Chris<br>
+                        <label class="error" for="student"></label>
+                    </div><br />
+                    <img style="width:150px" id="pic" src="" />
+                </td>
+                <td style="padding-right: 20px;width:200px">
+                    <!-- Form Input Start -->
+                    <table class="Questions" style="width:200px;border:none;background-color:lightgray">
+                        <tr>
+                            <td>
+                                <div class="form-entry">
+                                    <label class="q-item-label" for="entry_1788218458_SchoolDate">
+                                        School Date:
+                                    </label>
+                                    <div class="secondary-text" dir="ltr">Date work was completed</div>
+                                    <input style="width:80px" type="text" name="entry.1788218458_SchoolDate" value="" class="required entryfield" id="entry_1788218458_SchoolDate" title="School Date is required">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="entry_1814284914_Subject">
+                                    Subject:
+                                </label>
+                                <select id="entry_1814284914_Subject" class="required entryfield" onchange="checkField(this);updateRecordsViewSubject(this.value)" title="Subject is required">
+                                    <option value="">Select</option>
+                                    <option value="Art">Art</option>
+                                    <option value="Bible">Bible</option>
+                                    <option value="English">English</option>
+                                    <option value="Health/PE">Health/PE</option>
+                                    <option value="History">History</option>
+                                    <option value="Math">Math</option>
+                                    <option value="Music">Music</option>
+                                    <option value="Science">Science</option>
+                                    <option value="Spanish">Spanish</option>
+                                    <option value="Computer">Computer</option>
+                                    <option value="Typing">Typing</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                                <div style="display:none" id="entry_1814284914_Subject_Other_div">
+                                    <label for="entry_1814284914_Other">Other Subject:</label>
+                                    <input type="text" class="required entryfield" name="entry.1814284914_Subject_Other" value="" id="entry_1814284914_Subject_Other" title="Other Subject is Required" />
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="entry_1272761553_EntryType">
+                                    Entry Type:
+                                </label>
+                                <select id="entry_1272761553_EntryType" name="entry.1272761553_EntryType" class="required entryfield" onchange="checkFieldOther(this)" title="Entry Type is required">
+                                    <option value="">Select</option>
+                                    <option value="Lesson">Lesson</option>
+                                    <option value="Pages">Pages</option>
+                                    <option value="Quiz">Quiz</option>
+                                    <option value="Test">Test</option>
+                                    <option value="Exercise">Exercise</option>
+									<option value="Experiment">Experiment</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                                <label class="error" for="entry_1272761553_EntryType"></label>                      
+                                <div style="display:none" id="entry_1272761553_EntryType_Other_div">
+                                    <label for="entry_1969626974_EntryType_Other">Other:</label>
+                                    <input type="text" class="required entryfield" name="entry.1272761553_EntryType_Other" value="" id="entry_1272761553_EntryType_Other" title="Other Entry Type is Required" />
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="entry_723042042_TextBook">
+                                    Text Book:
+                                </label>
+                                <div class="secondary-text" dir="ltr">If no text book, select None.</div>
+                                <select id="entry_723042042_TextBook" name="entry.723042042_TextBook" class="required entryfield" onchange="checkFieldOther(this)" title="Text Book is required">
+                                    <option value="">Select</option>
+                                    <option class="Book McKaylaMath" value="Teaching Text Books 7">Teaching Text Books 7</option>
+                                    <option class="Book BrendenMath" value="Teaching Text Books Algebra 1">Teaching Text Books Algebra 1</option>
+                                    <option class="Book SamanthaMath" value="Horizons 2">Horizons 2</option>
+                                    <option class="Book CaidenMath" value="Horizons 5">Horizons 5</option>
+									<option class="Book CaidenMath" value="Teaching Text Books 6">Teaching Text Books 6</option>
+                                    <option class="Book McKaylaEnglish" value="Spelling Power">Spelling Power</option>
+                                    <option class="Book CaidenEnglish" value="Spelling Power">Spelling Power</option>
+                                    <option class="Book BrendenEnglish" value="Spelling Power">Spelling Power</option>
+                                    <option class="Book McKaylaEnglish" value="Essentials in Writing 7th grade">Essentials in Writing 7th grade</option>
+									<option class="Book BrendenEnglish" value="Essentials in Writing 9th grade">Essentials in Writing 9th grade</option>
+									<option class="Book BrendenEnglish" value="In His Steps">In His Steps</option>
+                                    <option class="Book McKaylaScience" value="Exploring Creation with General Science Textbook">Exploring Creation with General Science Textbook</option>
+									<option class="Book McKaylaScience" value="Exploring Creation with General Science Workbook">Exploring Creation with General Science Workbook</option>
+									<option class="Book BrendenScience" value="Exploring Creation with Physical Science Textbook">Exploring Creation with Physical Science Textbook</option>
+									<option class="Book BrendenScience" value="Exploring Creation with Physical Science Workbook">Exploring Creation with Physical Science Workbook</option>
+                                    <option class="Book McKaylaMusic" value="Step by Step Piano course Book 1">Step by Step Piano course Book 1</option>
+									<option class="Book BrendenMusic SamanthaMusic" value="Solo Guitar Playing 1">Solo Guitar Playing 1</option>
+									<option class="Book SamanthaMusic" value="Kid's Drum Course 1">Kid's Drum Course 1</option>
+									<option class="Book CaidenMusic" value="Nine-Note Recorder Method">Nine-Note Recorder Method</option>
+									<option class="Book CaidenScience" value="Considering God's Creation">Considering God's Creation</option>
+                                    <option class="Book English" value="Explode the Code 6">Explode the Code 6</option>
+                                    <option class="Book SamanthaEnglish" value="Explode the Code 1 1/2">Explode the Code 1 1/2</option>
+                                    <option class="Book SamanthaEnglish" value="Explode the Code 2">Explode the Code 2</option>
+									<option class="Book SamanthaEnglish" value="Explode the Code 2.5">Explode the Code 2.5</option>
+									<option class="Book SamanthaEnglish" value="Handwriting without Tears: Printing Power">Handwriting without Tears: Printing Power</option>
+                                    <option class="Book CaidenEnglish" value="Handwriting without Tears: Can do Cursive">Handwriting without Tears: Can do Cursive</option>
+                                    <option class="Book McKaylaSpanish" value="Skill Builders: Spanish 1">Skill Builders: Spanish 1</option>
+									<option class="Book BrendenSpanish" value="Rosetta Stone">Rosetta Stone</option>
+									<option class="Book BrendenHistory" value="Exploring America">Exploring America</option>
+									<option class="Book BrendenHistory" value="American Voices">American Voices</option>
+									<option class="Book BrendenHistory" value="Red Badge of Courage">Red Badge of Courage</option>
+									<option class="Book History" value=""></option>
+									<option class="Book McKaylaBible" value="YouVersion">YouVersion</option>
+									<option class="Book BrendenBible" value="Bible in a year">Bible in a year</option>
+									<option class="Book SamanthaBible CaidenBible" value="Jesus Calling">Jesus Calling</option>
+									<option class="Book SamanthaHistory McKaylaHistory CaidenHistory" value="America the Beautiful 1">America the Beautiful 1</option>
+									<option class="Book SamanthaHistory McKaylaHistory CaidenHistory" value="America the Beautiful 2">America the Beautiful 2</option>
+									<option class="Book SamanthaHistory" value="Moving West">Moving West</option>
+                                    <option class="" value="Other">Other</option>
+                                    <option class="" value="None">None</option>
+                                </select>
+                                <div style="display:none" id="entry_723042042_TextBook_Other_div">
+                                    <label for="entry_417248538_TextBook_Other">Other:</label>
+                                    <input type="text" class="required entryfield" name="entry.723042042_TextBook_Other" value="" id="entry_723042042_TextBook_Other" />
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="entry_417248538_Lesson">
+                                    Lesson # / Quiz Grade / Test Grade / Other:
+                                </label>
+                                <div class="secondary-text" dir="ltr">If entry type is other, just put a short description (ie exercise)</div>
+                                <input type="text" name="entry.118763302_Lesson" value="" id="entry_118763302_Lesson" dir="ltr" title="Lesson # / Quiz Grade / Test Grade / Other is required" class="required entryfield">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="entry_590904944_AdditionalNotes">
+                                    Additional Notes
+                                </label>
+                                <div class="secondary-text" dir="ltr">
+                                    If more notes are helpful add some details (ie ran 2 laps, did 40 pushups)
+                                </div>
+                                <textarea class="entryfield" name="entry.590904944_AdditionalNotes" rows="4" cols="25" id="entry_590904944_AdditionalNotes" dir="ltr" title="Additional Notes"></textarea>
+                            </td>
+                        </tr>
+                        <tr><td><input id="btnSubmit" type="button" value="Add" onclick="postToGoogle()" />&nbsp;<input id="btnResetEntryForm" type="reset" value="Reset" /></td></tr>
+                    </table>
+                    <!-- Form Input End -->
+
+                </td>
+                <td style="width:600px">
+                    <iframe id="iframeRecords" width="600" height="700" src="https://docs.google.com/spreadsheets/d/1KbEc960RT_lqJ7w6jyuKtoqTg_z2W71ScCVVmmLsn3Q/gviz/tq?tqx=out:html&tq=select+B,C,D,H,E,F+order+by+C+desc+limit+30" frameborder="0" marginheight="0" marginwidth="0"></iframe>
+                </td>
+
+            </tr>
+        </table>
+        <!-- Start Data Input -->
+    </form>
+
+</body>
+</html>
