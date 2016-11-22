@@ -1,30 +1,30 @@
 ﻿<!DOCTYPE html>
-
 <html lang="en">
 
 <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Homeschool Tracking</title>
+	<title>Homeschool Tracking</title>
 
-    <!-- CSS -->
-    <link href="css/bootstrap.min.css" rel="stylesheet" />
-    <link href="css/bootstrap-theme.min.css" rel="stylesheet" />
-    <!--<link href="css/style.css" rel="stylesheet" type="text/css" />-->
-    <link href="js/libs/jquery-ui/jquery-ui.css" rel="stylesheet" />
-    <link href="css/style.css" rel="stylesheet" type="text/css" />
+	<!-- CSS -->
+	<link href="css/bootstrap.min.css" rel="stylesheet" />
+	<link href="css/bootstrap-theme.min.css" rel="stylesheet" />
+	<!--<link href="css/style.css" rel="stylesheet" type="text/css" />-->
+	<link href="js/libs/jquery-ui/jquery-ui.css" rel="stylesheet" />
 
-    <!-- JQuery and Bootstrap Javascript Files-->
-    <script type="text/javascript" src="js/jquery.min.js"></script>
-    <script type="text/javascript" src="js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="js/libs/jquery.validate.min.js"></script>
-    <script type="text/javascript" src="js/libs/jquery-ui/jquery-ui.js"></script>
-    <script type="text/javascript" src="js/script.js"></script>
 
-    <script type="text/javascript">
+	<!-- JQuery and Bootstrap Javascript Files-->
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<script type="text/javascript" src="js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="js/libs/jquery.validate.min.js"></script>
+	<script type="text/javascript" src="js/libs/jquery-ui/jquery-ui.js"></script>
+	<script type="text/javascript" src="js/script.js"></script>
+
+	<script type="text/javascript">
 	    var selectedStudent;
+        var bookList;
         function updateRecordsView(student) {
             //alert(student)
 			selectedStudent = student;
@@ -32,16 +32,29 @@
             $('#iframeRecords').attr("src", url);
             $('#entry_983069968').val(student);
             $('#pic').attr("src", "IMG/" + student + ".JPG");
-            $('.entryfield').val('');
+            $('.entryfield form-control').val('');
             $('#entry_1788218458_SchoolDate').val(getTodaysDate());
+            $('#entry_1814284914_Subject').val('');
         }
 		function updateRecordsViewSubject(subject) {
             //alert(subject)
             var url = "https://docs.google.com/spreadsheets/d/1KbEc960RT_lqJ7w6jyuKtoqTg_z2W71ScCVVmmLsn3Q/gviz/tq?tqx=out:html&tq=select+B,C,D,H,E,F+where+B=%22" + selectedStudent + "%22+And+D=%22"+subject+"%22+order+by+C+desc+limit+30"
             $('#iframeRecords').attr("src", url);
         }
+
         $(document).ready(function () {
             $("#entryForm").validate();
+            // ID of the Google Spreadsheet
+            var spreadsheetID = "1E838uIN9FRlIOTM1iYbZ5g8PgnxZxKIUeKUs4AIKdCk";
+            
+            // Make sure it is public or set to Anyone with link can view 
+            var url = "https://spreadsheets.google.com/feeds/list/" + spreadsheetID + "/od6/public/values?alt=json";       
+ 
+            $.getJSON(url, function(data) {
+
+                bookList = data.feed.entry;
+            });
+
         });
 
         function postToGoogle() {
@@ -108,13 +121,29 @@
                 }).appendTo("body");
             });
         }
+        function loadBookValues() {
+            try {
+          
+                var txtStudent = $('#entry_983069968').val();
+                var txtSubject = $('#entry_1814284914_Subject').val();
+                var listItems = [];
+                $(bookList).each(function(){
+                    if (this.gsx$student.$t == txtStudent && this.gsx$subject.$t == txtSubject) 
+                    {
+                        listItems += "<option value='"+this.gsx$value.$t+"'>"+this.gsx$text.$t+"</option>";
+                    }
+                });
+                //Always add these options
+                listItems += "<option value='Other'>Other</option>";
+                listItems += "<option value='None'>None</option>";
 
-        function checkField(obj) {
-            $('.Book').hide();
-            var key = '.' + $('#entry_983069968').val() + $('#entry_1814284914_Subject').val();
-            $(key).show();
-            checkFieldOther(obj);
+                $('#entry_723042042_TextBook').html(listItems);
+                $('#TextBook').show();
+
+            } catch (e) { alert(e); }
         }
+        
+        
         function checkFieldOther(obj) {
             if (obj.options[obj.selectedIndex].text == "Other")
             { $('#' + obj.id + '_Other_div').show(); } else { $('#' + obj.id + '_Other_div').hide(); $('#' + obj.id + '_Other').val(''); }
@@ -132,74 +161,115 @@
         function getTodaysDate()
         { return $.datepicker.formatDate('yy-mm-dd', new Date()); }
     </script>
-    <!-- end scripts -->
+	<!-- end scripts -->
+
+	<style>
+		/* Remove the navbar's default margin-bottom and rounded borders */
+		
+		.navbar {
+			margin-bottom: 0;
+			border-radius: 0;
+		}
+		/* Set height of the grid so .sidenav can be 100% (adjust as needed) */
+		
+		.row.content {
+			height: 450px
+		}
+		/* Set gray background color and 100% height */
+		
+		.sidenav {
+			padding-top: 20px;
+			background-color: #f1f1f1;
+			height: 100%;
+		}
+		/* Set black background color, white text and some padding */
+		
+		footer {
+			background-color: #555;
+			color: white;
+			padding: 15px;
+		}
+		/* On small screens, set height to 'auto' for sidenav and grid */
+		
+		@media screen and (max-width: 767px) {
+			.sidenav {
+				height: auto;
+				padding: 15px;
+			}
+			.row.content {
+				height: auto;
+			}
+		}
+	</style>
 </head>
 
 <body>
-    <!-- Start Bootstrap Navbar -->
-    <nav class="navbar navbar-default">
-        <div class="container-fluid" style="background-color: #004070;color:white;">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header" style="background-color: #004070;color:white;">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
+	<!-- Start Bootstrap Navbar -->
+	<nav class="navbar navbar-default">
+		<div class="container-fluid" style="background-color: #004070;color:white;">
+			<!-- Brand and toggle get grouped for better mobile display -->
+			<div class="navbar-header" style="background-color: #004070;color:white;">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
                     <span class="sr-only">Toggle navigation</span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <span class="hidden-xs hidden-sm"><a class="navbar-brand" href="index.html" style="background-color: #004070;color:white;">Donovan Homeschool Tracker</a></span>
-                <span class="hidden-md hidden-lg hidden-xl"><a class="navbar-brand" href="index.html" style="background-color: #004070;color:white;">Donovan Site</a></span>
-            </div>
+				<span class="hidden-xs hidden-sm"><a class="navbar-brand" href="index.html" style="background-color: #004070;color:white;">Donovan Homeschool Tracker</a></span>
+				<span class="hidden-md hidden-lg hidden-xl"><a class="navbar-brand" href="index.html" style="background-color: #004070;color:white;">Donovan Site</a></span>
+			</div>
 
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="navbar-collapse-1" style="background-color: #004070;color:white;">
-                <ul class="nav navbar-nav" style="background-color: #004070;color:white;">
-                    <li><a href="HomeSchoolTrackerForm.html" style="background-color: #004070;color:white;">By Status</a></li>
-                    <li runat="server" id="menuSummary" visible="false"><a href="expensesummary.aspx" style="background-color: #004070;color:white;">Summary</a></li>
-                </ul>
+			<!-- Collect the nav links, forms, and other content for toggling -->
+			<div class="collapse navbar-collapse" id="navbar-collapse-1" style="background-color: #004070;color:white;">
+				<ul class="nav navbar-nav" style="background-color: #004070;color:white;">
+					<li><a href="HomeSchoolTrackerForm.html" style="background-color: #004070;color:white;">By Status</a></li>
+					<li runat="server" id="menuSummary" visible="false"><a href="expensesummary.aspx" style="background-color: #004070;color:white;">Summary</a></li>
+				</ul>
 
-                <!--<p class="navbar-text navbar-right" style="padding-right: 20px;">
+				<!--<p class="navbar-text navbar-right" style="padding-right: 20px;">
                         <asp:Label ID="txtWelcomeMesg" runat="server" Text="" Style="color: white;"></asp:Label>
                     </p>-->
-            </div>
-            <!-- /.navbar-collapse -->
-        </div>
-        <!-- /.container-fluid -->
-    </nav>
+			</div>
+			<!-- /.navbar-collapse -->
+		</div>
+		<!-- /.container-fluid -->
+	</nav>
 
-    <div class="container-fluid">
-        <div class="main">
-            <h3>Donovan Home School Tracker</h3>
-            <h4>Today's Date: <span id="todaysdate"></span></h4>
-            <form class="" id="entryForm">
-                <div class="row Questions">
-                    <div class="col-xs-6 col-md-4 col-lg-2 form-group">
-                        <label for="student">Student Name: *</label>
-                        <div>
-                            <input type="radio" name="student" class="required" value="Brenden" onclick="updateRecordsView(this.value)">Brenden<br>
-                            <input type="radio" name="student" value="McKayla" onclick="updateRecordsView(this.value)">McKayla<br>
-                            <input type="radio" name="student" value="Caiden" onclick="updateRecordsView(this.value)">Caiden<br>
-                            <input type="radio" name="student" value="Samantha" onclick="updateRecordsView(this.value)">Samantha<br>
-                            <input type="radio" name="student" value="Chris" onclick="updateRecordsView(this.value)">Chris<br>
-                            <label class="error" for="student"></label>
-                        </div><br />
+	<div class="container-fluid">
+		<form id="entryForm">
 
-                    </div>
-                    <div class="col-xs-6 col-md-4  col-lg-2 form-group">
-                        <img style="width:150px" id="pic" src="" />
-                    </div>
-                    <div class="col-xs-4 col-md-4  col-lg-2 form-group">
-                        <label for="entry_1788218458_SchoolDate">School Date *</label>
-                        <input style="width:80px" type="text" name="entry.1788218458_SchoolDate" value="" class="required entryfield" id="entry_1788218458_SchoolDate"
-                            title="School Date is required">
-                    </div>
+			<h3>Donovan Home School Tracker</h3>
+			<h4>Today's Date: <span id="todaysdate"></span></h4>
 
-                    <div class="col-xs-6 col-md-4  col-lg-2 form-group">
-                        <label for="entry_1814284914_Subject">
+			<div class="row Questions">
+				<div class="col-xs-6 col-md-4 col-lg-2 form-group">
+					<label for="student">Student Name: *</label>
+					<div>
+						<input type="radio" name="student" class="required" value="Brenden" onclick="updateRecordsView(this.value)">Brenden<br>
+						<input type="radio" name="student" value="McKayla" onclick="updateRecordsView(this.value)">McKayla<br>
+						<input type="radio" name="student" value="Caiden" onclick="updateRecordsView(this.value)">Caiden<br>
+						<input type="radio" name="student" value="Samantha" onclick="updateRecordsView(this.value)">Samantha<br>
+						<input type="radio" name="student" value="Chris" onclick="updateRecordsView(this.value)">Chris<br>
+						<label class="error" for="student"></label>
+					</div>
+
+				</div>
+				<div class="col-xs-6 col-md-4  col-lg-2 form-group">
+					<img style="width:150px" id="pic" src="" />
+				</div>
+				<div class="col-xs-4 col-md-4  col-lg-2 form-group">
+					<label for="entry_1788218458_SchoolDate">School Date *</label>
+					<input type="text" name="entry.1788218458_SchoolDate" value="" class="required entryfield form-control" id="entry_1788218458_SchoolDate"
+						title="School Date is required">
+				</div>
+
+				<div class="col-xs-6 col-md-4  col-lg-2 form-group">
+					<label for="entry_1814284914_Subject">
                                     Subject:
                                 </label>
-                        <select id="entry_1814284914_Subject" class="required entryfield" onchange="checkField(this);updateRecordsViewSubject(this.value)"
-                            title="Subject is required">
+
+					<select id="entry_1814284914_Subject" class="required entryfield form-control" onchange="loadBookValues();updateRecordsViewSubject(this.value)"
+						title="Subject is required">
                                     <option value="">Select</option>
                                     <option value="Art">Art</option>
                                     <option value="Bible">Bible</option>
@@ -214,17 +284,17 @@
                                     <option value="Typing">Typing</option>
                                     <option value="Other">Other</option>
                                 </select>
-                        <div style="display:none" id="entry_1814284914_Subject_Other_div">
-                            <label for="entry_1814284914_Other">Other Subject:</label>
-                            <input type="text" class="required entryfield" name="entry.1814284914_Subject_Other" value="" id="entry_1814284914_Subject_Other"
-                                title="Other Subject is Required" />
-                        </div>
-                    </div>
+					<div style="display:none" id="entry_1814284914_Subject_Other_div">
+						<label for="entry_1814284914_Other">Other Subject:</label>
+						<input type="text" class="required entryfield form-control" name="entry.1814284914_Subject_Other" value="" id="entry_1814284914_Subject_Other"
+							title="Other Subject is Required" />
+					</div>
+				</div>
 
-                    <div class="col-xs-6 col-md-4  col-lg-2 form-group">
-                        <label for="entry_1272761553_EntryType">Entry Type:</label>
-                        <select id="entry_1272761553_EntryType" name="entry.1272761553_EntryType" class="required entryfield" onchange="checkFieldOther(this)"
-                            title="Entry Type is required">
+				<div class="col-xs-6 col-md-4  col-lg-2 form-group">
+					<label for="entry_1272761553_EntryType">Entry Type:</label>
+					<select id="entry_1272761553_EntryType" name="entry.1272761553_EntryType" class="required entryfield form-control" onchange="checkFieldOther(this)"
+						title="Entry Type is required">
                                     <option value="">Select</option>
                                     <option value="Lesson">Lesson</option>
                                     <option value="Pages">Pages</option>
@@ -234,35 +304,35 @@
 									<option value="Experiment">Experiment</option>
                                     <option value="Other">Other</option>
                                 </select>
-                        <label class="error" for="entry_1272761553_EntryType"></label>
-                        <div style="display:none" id="entry_1272761553_EntryType_Other_div">
-                            <label for="entry_1969626974_EntryType_Other">Other:</label>
-                            <input type="text" class="required entryfield" name="entry.1272761553_EntryType_Other" value="" id="entry_1272761553_EntryType_Other"
-                                title="Other Entry Type is Required" />
-                        </div>
+					<label class="error" for="entry_1272761553_EntryType"></label>
+					<div style="display:none" id="entry_1272761553_EntryType_Other_div">
+						<label for="entry_1969626974_EntryType_Other">Other:</label>
+						<input type="text" class="required entryfield form-control" name="entry.1272761553_EntryType_Other" value="" id="entry_1272761553_EntryType_Other"
+							title="Other Entry Type is Required" />
+					</div>
 
-                    </div>
-                    <div class="col-xs-6 col-md-4  col-lg-2 form-group">
-                        <label for="entry_723042042_TextBook">
+				</div>
+				<div id="TextBook" style="display:none" class="col-xs-6 col-md-4  col-lg-2 form-group">
+					<label for="entry_723042042_TextBook">
                                     Text Book:
                                 </label>
-                        <div class="secondary-text" dir="ltr">If no text book, select None.</div>
-                        <select id="entry_723042042_TextBook" name="entry.723042042_TextBook" class="required entryfield" onchange="checkFieldOther(this)"
-                            title="Text Book is required">
+
+					<select id="entry_723042042_TextBook" name="entry.723042042_TextBook" class="required form-control" onchange="checkFieldOther(this)"
+						title="Text Book is required">
                                     <option value="">Select</option>
+
                                     <option class="Book SamanthaMath" value="Horizons 3">Horizons 3</option>
                                     <option class="Book SamanthaEnglish" value="Spelling Power">Spelling Power</option>
-                                    <option class="Book SamanthaEnglish" value="Explode the Code 3">Explode the Code 3</option>
-                                    <option class="Book SamanthaEnglish" value="SIPPS">SIPPS</option>
-									<option class="Book SamanthaEnglish" value="Cursive Handwriting">Cursive Handwriting</option>
-                                    <option class="Book SamanthaScience" value="Exploring God's Creation">Exploring God's Creation</option>
+                                    <option class="Book SamanthaEnglish" style="display:none" value="Explode the Code 3">Explode the Code 3</option>
+                                    <option class="Book SamanthaEnglish" style="display:none" value="SIPPS">SIPPS</option>
+									<option class="Book SamanthaEnglish" style="display:none" value="Cursive Handwriting">Cursive Handwriting</option>
+                                    <option class="Book SamanthaScience" style="display:none" value="Exploring God's Creation">Exploring God's Creation</option>
 									<option class="Book SamanthaMusic" value="Kid's Drum Course 1">Kid's Drum Course 1</option>
                                     <option class="Book SamanthaMusic" value="Solo Guitar Playing 1">Solo Guitar Playing 1</option>
 									<option class="Book SamanthaBible" value="Jesus Calling">Jesus Calling</option>
 									<option class="Book SamanthaSocialStudies" value="Paddle to the Sea">Paddle to the Sea</option>
 									<option class="Book SamanthaSocialStudies" value="Minn of the Mississippi">Minn of the Mississippi</option>
 									<option class="Book SamanthaSocialStudies" value="My World and Globe">My World and Globe</option>
-
 									<option class="Book CaidenMusic" value="Nine-Note Recorder Method">Nine-Note Recorder Method</option>
 									<option class="Book CaidenScience" value="Exploring God's Creation">Exploring God's Creation</option>
 									<option class="Book CaidenMath" value="Teaching Text Books 7">Teaching Text Books 7</option>
@@ -271,7 +341,6 @@
                                     <option class="Book CaidenSocialStudies" value="America the Beautiful 1">America the Beautiful 1</option>
 									<option class="Book CaidenSocialStudies" value="America the Beautiful 2">America the Beautiful 2</option>
                                     <option class="Book CaidenBible" value="Jesus Calling">Jesus Calling</option>
-
                                     <option class="Book McKaylaMath" value="Teaching Text Books Pre-Algebra">Teaching Text Books Pre-Algebra</option>
                                     <option class="Book McKaylaEnglish" value="Spelling Power">Spelling Power</option>
                                     <option class="Book McKaylaEnglishOLD" value="Essentials in Writing 7th grade">Essentials in Writing 7th grade</option>
@@ -304,75 +373,75 @@
                                     <option class="" value="Other">Other</option>
                                     <option class="" value="None">None</option>
                                 </select>
-                        <div style="display:none" id="entry_723042042_TextBook_Other_div">
-                            <label for="entry_417248538_TextBook_Other">Other:</label>
-                            <input type="text" class="required entryfield" name="entry.723042042_TextBook_Other" value="" id="entry_723042042_TextBook_Other"
-                            />
-                        </div>
-                    </div>
+					<div style="display:none" id="entry_723042042_TextBook_Other_div">
+						<label for="entry_417248538_TextBook_Other">Other:</label>
+						<input type="text" class="required entryfield form-control" name="entry.723042042_TextBook_Other" value="" id="entry_723042042_TextBook_Other"
+						/>
+					</div>
+					<div class="secondary-text" dir="ltr">If no text book, select None.</div>
+				</div>
 
-                    <div class="col-xs-6 col-md-4 col-lg-2 form-group">
-                        <label for="entry_417248538_Lesson">
+				<div class="col-xs-6 col-md-4 col-lg-2 form-group">
+					<label for="entry_417248538_Lesson">
                                     Lesson # / Quiz Grade / Test Grade / Other:
                                 </label>
-                        <div class="secondary-text" dir="ltr">If entry type is other, just put a short description (ie exercise)</div>
-                        <input type="text" name="entry.118763302_Lesson" value="" id="entry_118763302_Lesson" dir="ltr" title="Lesson # / Quiz Grade / Test Grade / Other is required"
-                            class="required entryfield">
+					<div class="secondary-text" dir="ltr">If entry type is other, just put a short description (ie exercise)</div>
+					<input type="text" name="entry.118763302_Lesson" value="" id="entry_118763302_Lesson" dir="ltr" title="Lesson # / Quiz Grade / Test Grade / Other is required"
+						class="required entryfield form-control">
 
 
-                    </div>
-                    <div class="col-xs-6 col-md-4 col-lg-2 form-group">
-                        <label for="entry_590904944_AdditionalNotes">
+				</div>
+				<div class="col-xs-6 col-md-4 col-lg-2 form-group">
+					<label for="entry_590904944_AdditionalNotes">
                                     Additional Notes
                                 </label>
-                        <div class="secondary-text" dir="ltr">
-                            If more notes are helpful add some details (ie ran 2 laps, did 40 pushups)
-                        </div>
-                        <textarea class="entryfield" name="entry.590904944_AdditionalNotes" rows="4" cols="25" id="entry_590904944_AdditionalNotes"
-                            dir="ltr" title="Additional Notes"></textarea>
-                    </div>
-                </div>
+					<div class="secondary-text" dir="ltr">
+						If more notes are helpful add some details (ie ran 2 laps, did 40 pushups)
+					</div>
+					<textarea class="entryfield form-control" name="entry.590904944_AdditionalNotes" rows="4" cols="25" id="entry_590904944_AdditionalNotes"
+						dir="ltr" title="Additional Notes"></textarea>
+				</div>
+			</div>
 
-                <div class="row">
-                    <div class="col-xs-6 col-md-4 col-lg-2 form-group">
-                        <input id="btnSubmit" type="button" value="Add" onclick="postToGoogle()" />&nbsp;<input id="btnResetEntryForm"
-                            type="reset" value="Reset" />
+			<div class="row">
+				<div class="col-xs-6 col-md-4 col-lg-2 form-group">
+					<input id="btnSubmit" type="button" value="Add" onclick="postToGoogle()" />&nbsp;<input id="btnResetEntryForm" type="reset"
+						value="Reset" />
 
-                    </div>
-                </div>
-
-
-
-                <div class="row">
-                    <div class="col-xs-8 col-md-4 form-group">
+				</div>
+			</div>
 
 
 
-                        <iframe id="iframeRecords" width="600" height="700" src="https://docs.google.com/spreadsheets/d/1KbEc960RT_lqJ7w6jyuKtoqTg_z2W71ScCVVmmLsn3Q/gviz/tq?tqx=out:html&tq=select+B,C,D,H,E,F+order+by+C+desc+limit+30"
-                            frameborder="0" marginheight="0" marginwidth="0"></iframe>
-                    </div>
-                </div>
-
-            </form>
-        </div>
-    </div>
+			<div class="row">
+				<div class="col-xs-8 col-md-4 form-group">
 
 
-    <iframe id="hidden_iframe" name="hidden_iframe" style="display:none"></iframe>
-    <form style="display:none" id="submitForm" action="https://docs.google.com/forms/d/13ag94IbQISNzXHxfauFeQt2_6GZtcuNj799ArCsyl6E/formResponse"
-        method="POST" target="hidden_iframe" onsubmit="sent_form=true">
-        Name
-        <input name="entry.983069968" value="" id="entry_983069968"> Date
-        <input name="entry.1788218458" value="" id="entry_1788218458"> Subject
-        <input name="entry.1814284914" value="" id="entry_1814284914"> Entry Type
-        <input name="entry.1272761553" value="" id="entry_1272761553"> Text Book
-        <input name="entry.723042042" value="" id="entry_723042042"> Lesson
-        <input name="entry.118763302" value="" id="entry_118763302"> Additional Notes
-        <input name="entry.590904944" value="" id="entry_590904944">
 
-        <input id="btnPostToGoogle" type="submit" value="Add" /><input id="btnResetSubmitForm" type="reset" value="reset"
-        />
-    </form>
+					<iframe id="iframeRecords" width="600" height="700" src="https://docs.google.com/spreadsheets/d/1KbEc960RT_lqJ7w6jyuKtoqTg_z2W71ScCVVmmLsn3Q/gviz/tq?tqx=out:html&tq=select+B,C,D,H,E,F+order+by+C+desc+limit+30"
+						frameborder="0" marginheight="0" marginwidth="0"></iframe>
+				</div>
+			</div>
+
+		</form>
+
+	</div>
+
+
+	<iframe id="hidden_iframe" name="hidden_iframe" style="display:none"></iframe>
+	<form style="display:none" id="submitForm" action="https://docs.google.com/forms/d/13ag94IbQISNzXHxfauFeQt2_6GZtcuNj799ArCsyl6E/formResponse"
+		method="POST" target="hidden_iframe" onsubmit="sent_form=true">
+		Name
+		<input name="entry.983069968" value="" id="entry_983069968"> Student
+		<input name="entry.1788218458" value="" id="entry_1788218458"> Date
+		<input name="entry.1814284914" value="" id="entry_1814284914"> Subject
+		<input name="entry.1272761553" value="" id="entry_1272761553"> Entry Type
+		<input name="entry.723042042" value="" id="entry_723042042"> Text Book
+		<input name="entry.118763302" value="" id="entry_118763302"> Lesson
+		<input name="entry.590904944" value="" id="entry_590904944"> Additional Notes
+
+		<input id="btnPostToGoogle" type="submit" value="Add" /><input id="btnResetSubmitForm" type="reset" value="reset" />
+	</form>
 
 </body>
 

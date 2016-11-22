@@ -1,0 +1,325 @@
+<html>
+
+<body>
+
+    <table class="table1" cellspacing="0" cellpadding="0">
+        <tbody>
+            <tr>
+                <td class="tableheader" colspan="2">Summary - Attorney Assignment Details </td>
+            </tr>
+            <tr class="UKReferral_Question" style="display: none;">
+                <td class="fieldlabel">* Referring International Information:<span id="partner_HELP"><help></help></span><input class="hidden" id="NBIDataService"
+                        value="http://baltentsof01v/NBI.DataService/GetData.aspx"></td>
+                <td>
+                    <table width="500" class="tablestandout">
+                        <tbody>
+                            <tr>
+                                <td>* Is this work referred by one international (e.g. - UK LLP) office to a US LLP office where
+                                    the engagement is directly between the Client and the US LLP office? (The US LLP will
+                                    bill the client directly.)<br>
+                                    <input name="%%Surrogate_wf_sum_UKReferral" type="hidden" value="1"><label>
+<input name="wf_sum_UKReferral" id="wf_sum_UKReferral" onclick="updateUKReferral()&#10;&#10;          " type="radio" checked="" value="Yes">Yes</label><label>
+<input name="wf_sum_UKReferral" id="wf_sum_UKReferral" onclick="updateUKReferral()&#10;&#10;          " type="radio" value="No">No</label>                                    <span class="fieldvalid" id="WF_SUM_UKREFERRAL_MESG"><mesg></mesg></span>
+                                    <p>
+                                        <input name="wf_sum_UKReferral_Reset" class="hidden" id="wf_sum_UKReferral_Reset" onclick="&#10;          " value="y"></p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            <tr class="UKReferral_Office UKReferral_Fields" style="display: none;">
+                <td class="fieldlabel">* Referring International office:</td>
+                <td>
+                    <input name="%%Surrogate_wf_sum_DLAReferringOffice" type="hidden" value="1">
+                    <select name="wf_sum_DLAReferringOffice" id="wf_sum_DLAReferringOffice" onchange="SelectedValue = this.options[this.options.selectedIndex].value;&#10;$('#wf_sum_DLAReferringOffice_Code').val(SelectedValue.substr(1));&#10;$('#wf_sum_dla_clnbr').val('');&#10;$('#wf_sum_dlaclt_refer').val('');&#10;SelectedValue = this.options[this.options.selectedIndex].value;&#10;$('#wf_sum_DLARefer_Partner').val(SelectedValue.substr(0,1));&#10;&#10;if ($('#wf_sum_DLARefer_Partner').val()=='') {&#10;&#9;$('.UKReferral_SubFields').hide();&#10;} else {&#10;&#9;$('.UKReferral_SubFields').show();&#10;&#9;if ($('#wf_sum_DLARefer_Partner').val()=='0') {&#10;&#9;  $('#wf_sum_dlaclt_refer').attr(&quot;readonly&quot;,&quot;true&quot;);&#10;       $('#wf_sum_dlaclt_refer').attr('style','background:lightgray');&#10;       $('#dlaoffice_refer').show(); &#10;       $('.UKReferral_Attys').show(); &#10;&#9;} else if ($('#wf_sum_DLARefer_Partner').val()=='1')  {&#10;       $('#wf_sum_dlaclt_refer').removeAttr(&quot;readonly&quot;);&#10;       $('#wf_sum_dlaclt_refer').attr('style','background:white');&#10;       $('#dlaoffice_refer').hide();    &#10;       $('.UKReferral_Attys').show(); &#10;&#9;} else {&#10;       $('.UKReferral_SubFields').hide();&#10;       $('.UKReferral_Attys').hide();&#10;       //$('.UKReferral_Fields UKReferral_SubFields').hide();    &#10;&#9;}&#10;}&#10;&#10;">
+<option value="">- Select -</select>
+                    <span class="fieldvalid" id="WF_SUM_DLAREFERRINGOFFICE_MESG"><mesg></mesg></span><br>
+
+                    <input name="wf_sum_DLARefer_Partner" class="hidden" id="wf_sum_DLARefer_Partner" value="">
+                    <input name="wf_sum_DLAReferringOffice_Code" class="hidden" id="wf_sum_DLAReferringOffice_Code" size="1" value="">
+                </td>
+            </tr>
+            <tr class="UKReferral_Fields UKReferral_SubFields" style="display: none;">
+                <td class="fieldlabel">* International client number:</td>
+                <td>
+                    <input name="wf_sum_dla_clnbr" id="wf_sum_dla_clnbr" onblur="$('#wf_sum_dlaclt_refer').val('');&#10;if (this.value=='12345678') { $('#wf_sum_DLARefer_Partner').val('1'); $('#wf_sum_dlaclt_refer').val('Not Applicable'); } else {&#10;if (this.value!='') {&#10;if($('#wf_sum_DLARefer_Partner').val()=='0'){ &#10;if(this.value.length!=8) {alert('This field should have an 8 digit client number..  Please update.'); this.focus();} else {&#10;if (CheckNumeric(this.value)) {&#10;$('#wf_sum_dlaclt_jp').val(''); $(&quot;#webserviceprocessing_refer&quot;).show();&#10;getClientMatterData(this.value, $('#wf_sum_DLAReferringOffice').val(), $('#wf_sum_dla_clnbr_status'), &quot;int&quot;, completeCall_Refer);  &#10; } else { alert('The client number should be numeric.'); } }&#10;} else { if (!CheckNumeric(this.value)) { alert('The client number should be numeric.'); } } } }"
+                        size="18" maxlength="20" value=""> <span class="fieldvalid" id="WF_SUM_DLA_CLNBR_MESG"><mesg></mesg></span>
+                    <div
+                        id="webserviceprocessing_refer" style="display: none;"><img height="15" style="vertical-align: middle;" alt="processing" src="/nbi_dev.nsf/ajax-loader.gif">                        processing...please wait</div><br>
+
+                        <input name="wf_sum_dla_clnbr_status" class="hidden" id="wf_sum_dla_clnbr_status" value="">
+                </td>
+            </tr>
+            <tr class="UKReferral_Fields UKReferral_SubFields" style="display: none;">
+                <td class="fieldlabel">* International client name:</td>
+                <td>
+                    <input name="wf_sum_dlaclt_refer" id="wf_sum_dlaclt_refer" size="48" maxlength="48" value=""><span class="fieldvalid"
+                        id="WF_SUM_DLACLT_REFER_MESG"><mesg></mesg></span></td>
+            </tr>
+            <tr class="UKReferral_Attys" style="display: block;">
+                <td class="fieldlabel">* Referring International Parties:</td>
+                <td>
+                    <input name="nb_sum_pmrw_mt_dlarf1_Select" id="nb_sum_pmrw_mt_dlarf1_Select" onkeyup="UKReferralLookup(this)" onfocus='if (this.value=="Type Atty # OR Last Name") { this.value=""; this.style.color="black" ; this.style.fontStyle="normal"; }'
+                        onblur="if(this.value.length>0) checkSelectField(this);&#10;  " size="23" value="">
+                    <span
+                        class="smallnote">&lt;--type ahead:</span>
+                        <input name="nb_sum_pmrw_mt_dlarf1" tabindex="-1" class="readonly" id="nb_sum_pmrw_mt_dlarf1" size="10" readonly="true" value="">
+                        <input name="nb_sum_pmrw_mt_dlarf1_DESC" tabindex="-1" class="readonly" id="nb_sum_pmrw_mt_dlarf1_DESC" size="20" readonly="true"
+                            value=""> <a tabindex="-1" class="nbi_link" href="javascript:clearFieldList('nb_sum_pmrw_mt_dlarf1;nb_sum_pmrw_mt_dlarf1_DESC;nb_sum_pmrw_mt_dlarf1_Title')">Clear</a>                        <span class="fieldvalid" id="NB_SUM_PMRW_MT_DLARF1_MESG"><mesg></mesg></span><br>
+                        <div id="nb_sum_pmrw_mt_dlarf1TAOutput"
+                            style="display: none; position: absolute; z-index: 205;"></div>
+                        <input name="nb_sum_pmrw_mt_dlarf2_Select" id="nb_sum_pmrw_mt_dlarf2_Select" onkeyup="UKReferralLookup(this)" onfocus='if (this.value=="Type Atty # OR Last Name") { this.value=""; this.style.color="black" ; this.style.fontStyle="normal"; }'
+                            onblur="if(this.value.length>0) checkSelectField(this);&#10;  " size="23" value="">
+                        <span
+                            class="smallnote">&lt;--type ahead:</span>
+                            <input name="nb_sum_pmrw_mt_dlarf2" tabindex="-1" class="readonly" size="10" readonly="true" value="">
+                            <input name="nb_sum_pmrw_mt_dlarf2_DESC" tabindex="-1" class="readonly" id="nb_sum_pmrw_mt_dlarf2_DESC" size="20" readonly="true"
+                                value=""> <a tabindex="-1" class="nbi_link" href="javascript:clearFieldList('nb_sum_pmrw_mt_dlarf2;nb_sum_pmrw_mt_dlarf2_DESC;nb_sum_pmrw_mt_dlarf2_Title')">Clear</a>                            <span class="fieldvalid" id="NB_SUM_PMRW_MT_DLARF2_MESG"><mesg></mesg></span><br>
+                            <div id="nb_sum_pmrw_mt_dlarf2TAOutput"
+                                style="display: none; position: absolute; z-index: 205;"></div>
+                            <input name="nb_sum_pmrw_mt_dlarf3_Select" id="nb_sum_pmrw_mt_dlarf3_Select" onkeyup="UKReferralLookup(this)" onfocus='if (this.value=="Type Atty # OR Last Name") { this.value=""; this.style.color="black" ; this.style.fontStyle="normal"; }'
+                                onblur="if(this.value.length>0) checkSelectField(this);&#10;  " size="23" value="">
+                            <span
+                                class="smallnote">&lt;--type ahead:</span>
+                                <input name="nb_sum_pmrw_mt_dlarf3" tabindex="-1" class="readonly" size="10" readonly="true" value="">
+                                <input name="nb_sum_pmrw_mt_dlarf3_DESC" tabindex="-1" class="readonly" id="nb_sum_pmrw_mt_dlarf3_DESC" size="20" readonly="true"
+                                    value=""> <a tabindex="-1" class="nbi_link" href="javascript:clearFieldList('nb_sum_pmrw_mt_dlarf3;nb_sum_pmrw_mt_dlarf3_DESC;nb_sum_pmrw_mt_dlarf3_Title')">Clear</a>                                <span class="fieldvalid" id="NB_SUM_PMRW_MT_DLARF3_MESG"><mesg></mesg></span><br>
+                                <div id="nb_sum_pmrw_mt_dlarf3TAOutput"
+                                    style="display: none; position: absolute; z-index: 205;"></div>
+                                <input name="nb_sum_pmrw_mt_dlarf4_Select" id="nb_sum_pmrw_mt_dlarf4_Select" onkeyup="UKReferralLookup(this)" onfocus='if (this.value=="Type Atty # OR Last Name") { this.value=""; this.style.color="black" ; this.style.fontStyle="normal"; }'
+                                    onblur="if(this.value.length>0) checkSelectField(this);" size="23" value="">
+                                <span
+                                    class="smallnote">&lt;--type ahead:</span>
+                                    <input name="nb_sum_pmrw_mt_dlarf4" tabindex="-1" class="readonly" size="10" readonly="true" value="">
+                                    <input name="nb_sum_pmrw_mt_dlarf4_DESC" tabindex="-1" class="readonly" id="nb_sum_pmrw_mt_dlarf4_DESC" size="20" readonly="true"
+                                        value=""> <a tabindex="-1" class="nbi_link" href="javascript:clearFieldList('nb_sum_pmrw_mt_dlarf4;nb_sum_pmrw_mt_dlarf4_DESC;nb_sum_pmrw_mt_dlarf4_Title')">Clear</a>                                    <span class="fieldvalid" id="NB_SUM_PMRW_MT_DLARF4_MESG"><mesg></mesg></span><br>
+                                    <div
+                                        id="nb_sum_pmrw_mt_dlarf4TAOutput" style="display: none; position: absolute; z-index: 205;"></div>
+                                        <input name="nb_sum_pmrw_mt_dlarf1_Title" class="hidden" onchange="var field = this.name.substring(0,this.name.indexOf('_Title'));&#10;if (document.getElementById('Lookup_titles_NUS').value.indexOf(this.value)<1) {alert('You have entered an invalid attorney number: '+document.getElementById(field).value+'.  Please try again.'); &#10;clearFieldList(field+';'+field+'_DESC;'+field+'_Title');&#10;document.getElementById(field+'_Select').focus();}"
+                                            value="">
+                                        <input name="nb_sum_pmrw_mt_dlarf2_Title" class="hidden" onchange="var field = this.name.substring(0,this.name.indexOf('_Title'));&#10;if (document.getElementById('Lookup_titles_NUS').value.indexOf(this.value)<1) {alert('You have entered an invalid attorney number: '+document.getElementById(field).value+'.  Please try again.'); clearFieldList(field+';'+field+'_DESC;'+field+'_Title');}"
+                                            value="">
+                                        <input name="nb_sum_pmrw_mt_dlarf3_Title" class="hidden" onchange="var field = this.name.substring(0,this.name.indexOf('_Title'));&#10;if (document.getElementById('Lookup_titles_NUS').value.indexOf(this.value)<1) {alert('You have entered an invalid attorney number: '+document.getElementById(field).value+'.  Please try again.'); clearFieldList(field+';'+field+'_DESC;'+field+'_Title');}"
+                                            value="">
+                                        <input name="nb_sum_pmrw_mt_dlarf4_Title" class="hidden" onchange="var field = this.name.substring(0,this.name.indexOf('_Title'));&#10;if (document.getElementById('Lookup_titles_NUS').value.indexOf(this.value)<1) {alert('You have entered an invalid attorney number: '+document.getElementById(field).value+'.  Please try again.'); clearFieldList(field+';'+field+'_DESC;'+field+'_Title');}"
+                                            value=""></td>
+            </tr>
+
+
+            <tr>
+                <td class="fieldlabel">*
+                    <font color="#00a000"><span id="MRESP_HELP"><help></help></span></font>Responsible Attorney:<input id="Lookup_titles_US" style="display: none;"
+                        value="[|Attorney|Partner|Of Counsel|Associate|Principal Counsel|Pro Bono Counsel|Partner Emeritus|Retired Partners|Senior Counsel|Senior Counsel - Pro Bono|Special Counsel|New Perimeter Manager|International Pro Bono Counsel|Director, Intellectual Property Group|Senior Pro Bono Counsel|DLA Piper Fellow|Senior Staff Attorney Professional Responsibility|Of Counsel - Mexico City|Partner - Mexico City|Sr Internatl Pro Bono Counsel|Foreign Legal Consultant|DLA Piper Consultores Em Direito|Special Counsel Pro Bono Prgs|Director of Diversity and Inclusion|Senior Attorney|Firm Attorney|Director &amp; Counsel for US Pro Bono Programs|Sr Pro Bono Attorney|Professional Responsibility Counsel|Special Legal Consultant|Managing Director]">
+                    <input
+                        id="Lookup_titles_NUS" style="display: none;" value="[|Abogado|Associate|Avvocato|Advocaat|Advocaat - Partner|Advocaat-Avocat|Chairman|Co-Chairman|Consultant|Counsel|Director|Fee Earner|Foreign Lawyer|Head of Real Estate|International Director|Lawyer|Lead Lawyer|Legal Consultant|Legal Director|Managing Partner|Of-Counsel|Office Managing Partner|Partner|PRC/US Lawyer|Professional Support Lawyer|Professional Support Lawyer/Senior Associate|Regional Managing Partner|Regional Managing Partner - UK Regions|Senior Associate|Senior Consultant|Senior Counsel|Senior Lead Lawyer|Senior Legal Consultant|Senior Partner|Senior Professional Support Lawyer|Solicitor|Solicitor (Scottish Qualified)|Stagiaire|Strategic Projects Director|Director (Scottish &amp; Northern Regions)|Group Head (Amsterdam)|Deputy Regional Managing Partner|Group Head (EMEA)|Country Managing Partner|Head of Trade|Senior Adviser|Foreign Legal Consultant|Foreign Legal Consultant (Italy)|Junior Associate|Foreign Legal Consultant (New York, USA)|Foreign Legal Consultant (Victoria, Australia)|Foreign Legal Consultant (England &amp; Wales)|Partner I|Partner II|Partner III|Partner IV|Partner V|Senior Associate I|Senior Associate II|Senior Partner I|Senior Partner II|Associate VI|Associate VII|Associate VIII|Assistant directors|Avocat à la Cour, Partner|Avocat à la Cour, Senior Associate|Tax Advisor|Rechtsanwalt / Attorney-at-law|Director, National Tax Investigations|Head of Trade Mark Counselling|General Counsel|Notaris|Avocat à la Cour, Counsel|International Group Head, Corporate - RMP|Foreign Legal Consultant (Quebec, Canada)|Tax Adviser / Partner|Advocaat - Tax Adviser|Of Counsel|London Managing Partner|Solicitor - Pro Bono|Head of Investigations|International Director - GGR|Location Head, UK|Legal Director|International Development Partner|Partner - Pro Bono|DLA Piper Consultores Em Direito|Managing Director Groups &amp; Sectors-Senior Partner|Avocat à la Cour/Partner|De heer|Managing Partner, Cape Town|Avocat à la Cour, Country Managing Partner|Advocaat - Tax Adviser/Partner|Equity Partner|Tax Adviser - Partner|Registered Foreign Lawyer|Associate Partner|Foreign Legal Consultant (PRC)|Notary|Director Public Affairs|UK Managing Partner|Partner &amp; Location Head|Of Counsel (New York, USA)|Managing Director Europe &amp; Africa|Notaris - Partner|Partner, Asia Pac Group Head, Corporate|Rechtsanwältin / Attorney-at-law|Partner Equivalent|Senior Partner-MD Europe&amp;Middle East Spain|Head of U.S. Capital Markets, Asia Pacific|Firm Managing Partner|Advocaat - Partner|Head of Intellectual Property and Technology|Co-Head International Transfer Pricing|Partner Equivalent/Sub-Group Head (GTGA)]"><input id="Lookup_titles_NonLegMgr" style="display: none;" value="[|Consultant|Economist|Principal Economist|Government Affairs Specialist|Governmental Affairs Consult.|Land Use Advisor|Principal|Principal Counsel|Principal Economist|Real Estate Specialist|Senior Policy Advisor|Policy Advisor|Special Counsel|Technical Advisor|Chairman Emeritus|Senior Government Affairs Specialist]"></td>
+                <td>
+                    <input name="nb_sum_Mresp1_Select" class="fieldPrefill" id="nb_sum_Mresp1_Select" onkeyup="ResponsibleAttyLookup(this)" onfocus='if (this.value=="Type Atty # OR Last Name") { this.value=""; this.style.color="black" ; this.style.fontStyle="normal"; }'
+                        onblur="if(this.value.length>0) checkSelectField(this);&#10;  " size="23" value="Type Atty # OR Last Name">
+                    <span
+                        class="smallnote">&lt;--type ahead:</span>
+                        <input name="nb_sum_Mresp1" tabindex="-1" class="readonly" size="6" readonly="true" value="">
+                        <input name="nb_sum_Mresp1_DESC" tabindex="-1" class="readonly" id="nb_sum_Mresp1_DESC" size="20" readonly="true" value="">                        <a tabindex="-1" class="nbi_link" href="javascript:clearFieldList('nb_sum_Mresp1;nb_sum_Mresp1_DESC;nb_sum_Mresp1_Title')">Clear</a>                        <span class="fieldvalid" id="NB_SUM_MRESP1_MESG"><mesg></mesg></span><br>
+                        <div id="nb_sum_Mresp1TAOutput"
+                            style="display: none; position: absolute; z-index: 205;"></div>
+                        <input name="nb_sum_Mresp2_Select" class="fieldPrefill" onkeyup="ResponsibleAttyLookup(this)" onfocus='if (this.value=="Type Atty # OR Last Name") { this.value=""; this.style.color="black" ; this.style.fontStyle="normal"; }'
+                            onblur="if(this.value.length>0) checkSelectField(this);" size="23" value="Type Atty # OR Last Name">
+                        <span
+                            class="smallnote">&lt;--type ahead:</span>
+                            <input name="nb_sum_Mresp2" tabindex="-1" class="readonly" size="6" readonly="true" value="">
+                            <input name="nb_sum_Mresp2_DESC" tabindex="-1" class="readonly" id="nb_sum_Mresp2_DESC" size="20" readonly="true" value="">                            <a tabindex="-1" class="nbi_link" href="javascript:clearFieldList('nb_sum_Mresp2;nb_sum_Mresp2_DESC;nb_sum_Mresp2_Title')">Clear</a>                            <span class="fieldvalid" id="NB_SUM_MRESP2_MESG"><mesg></mesg></span><br>
+                            <div id="nb_sum_Mresp2TAOutput"
+                                style="display: none; position: absolute; z-index: 205;"></div>
+                            <input name="nb_sum_Mresp3_Select" class="fieldPrefill" onkeyup="ResponsibleAttyLookup(this)" onfocus='if (this.value=="Type Atty # OR Last Name") { this.value=""; this.style.color="black" ; this.style.fontStyle="normal"; }'
+                                onblur="if(this.value.length>0) checkSelectField(this);" size="23" value="Type Atty # OR Last Name">
+                            <span
+                                class="smallnote">&lt;--type ahead:</span>
+                                <input name="nb_sum_Mresp3" tabindex="-1" class="readonly" size="6" readonly="true" value="">
+                                <input name="nb_sum_Mresp3_DESC" tabindex="-1" class="readonly" id="nb_sum_Mresp3_DESC" size="20" readonly="true" value="">                                <a tabindex="-1" class="nbi_link" href="javascript:clearFieldList('nb_sum_Mresp3;nb_sum_Mresp3_DESC;nb_sum_Mresp3_Title')">Clear</a>                                <span class="fieldvalid" id="NB_SUM_MRESP3_MESG"><mesg></mesg></span><br>
+                                <div id="nb_sum_Mresp3TAOutput"
+                                    style="display: none; position: absolute; z-index: 205;"></div>
+                                <input name="nb_sum_Mresp4_Select" class="fieldPrefill" onkeyup="ResponsibleAttyLookup(this)" onfocus='if (this.value=="Type Atty # OR Last Name") { this.value=""; this.style.color="black" ; this.style.fontStyle="normal"; }'
+                                    onblur="if(this.value.length>0) checkSelectField(this);" size="23" value="Type Atty # OR Last Name">
+                                <span
+                                    class="smallnote">&lt;--type ahead:</span>
+                                    <input name="nb_sum_Mresp4" tabindex="-1" class="readonly" size="6" readonly="true" value="">
+                                    <input name="nb_sum_Mresp4_DESC" tabindex="-1" class="readonly" id="nb_sum_Mresp4_DESC" size="20" readonly="true" value="">                                    <a tabindex="-1" class="nbi_link" href="javascript:clearFieldList('nb_sum_Mresp4;nb_sum_Mresp4_DESC;nb_sum_Mresp4_Title')">Clear</a>                                    <span class="fieldvalid" id="NB_SUM_MRESP4_MESG"><mesg></mesg></span><br>
+                                    <div id="nb_sum_Mresp4TAOutput"
+                                        style="display: none; position: absolute; z-index: 205;"></div><br>
+                                    <br>
+                                    <br>
+
+                                    <p>
+                                        <input name="nb_sum_Mresp1_Title" class="hidden" onchange="checkValidTitle(this, document.getElementById('Lookup_titles_US').value);"
+                                            value="">
+                                        <input name="nb_sum_Mresp2_Title" class="hidden" onchange="if (checkValidTitle(this, document.getElementById('Lookup_titles_US').value)) { if (this.value!='') {document.getElementById('Mresp_SPAN').style.display='inline';}}"
+                                            value="">
+                                        <input name="nb_sum_Mresp3_Title" class="hidden" onchange="checkValidTitle(this, document.getElementById('Lookup_titles_US').value);"
+                                            value="">
+                                        <input name="nb_sum_Mresp4_Title" class="hidden" onchange="checkValidTitle(this, document.getElementById('Lookup_titles_US').value);"
+                                            value="">
+                                    </p>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="fieldlabel">*
+                    <font color="#00a000"><span id="MMGR_HELP"><help></help></span></font>Matter Managing Attorney:</td>
+                <td>
+                    <input name="nb_sum_Mmgr1_Select" class="fieldPrefill" id="nb_sum_Mmgr1_Select" onkeyup="ManagingAttyLookup(this)" onfocus='if (this.value=="Type Atty # OR Last Name") { this.value=""; this.style.color="black" ; this.style.fontStyle="normal"; }'
+                        onblur="if(this.value.length>0) checkSelectField(this);" size="23" value="Type Atty # OR Last Name">
+                    <span
+                        class="smallnote">&lt;--type ahead:</span>
+                        <input name="nb_sum_Mmgr1" tabindex="-1" class="readonly" id="nb_sum_Mmgr1" size="6" readonly="true" value="">
+                        <input name="nb_sum_Mmgr1_DESC" tabindex="-1" class="readonly" id="nb_sum_Mmgr1_DESC" size="20" readonly="true" value="">                        <a tabindex="-1" class="nbi_link" href="javascript:clearFieldList('nb_sum_Mmgr1;nb_sum_Mmgr1_DESC;nb_sum_Mmgr1_Title;nb_sum_Mmgr1_PG')">Clear</a>                        <span class="fieldvalid" id="NB_SUM_MMGR1_MESG"><mesg></mesg></span><br>
+                        <div id="nb_sum_Mmgr1TAOutput"
+                            style="display: none; position: absolute; z-index: 205;"></div><span class="hidden" id="Mmgr_SPAN"> 
+<input name="nb_sum_Mmgr2_Select" class="fieldPrefill" id="nb_sum_Mmgr2_Select" onkeyup="ManagingAttyLookup(this)" onfocus='if (this.value=="Type Atty # OR Last Name") { this.value=""; this.style.color="black" ; this.style.fontStyle="normal"; }' onblur="if(this.value.length>0) checkSelectField(this);&#10;  " size="23" value="Type Atty # OR Last Name"><span class="smallnote">&lt;--type ahead:</span>
+                        <input name="nb_sum_Mmgr2" tabindex="-1" class="readonly" id="nb_sum_Mmgr2" size="6" readonly="true" value="">
+                        <input name="nb_sum_Mmgr2_DESC" tabindex="-1" class="readonly" id="nb_sum_Mmgr2_DESC" size="20" readonly="true" value="">                        <a tabindex="-1" class="nbi_link" href="javascript:clearFieldList('nb_sum_Mmgr2;nb_sum_Mmgr2_DESC;nb_sum_Mmgr2_Title;nb_sum_Mmgr2_PG')">Clear</a>                        <span class="fieldvalid" id="NB_SUM_MMGR2_MESG"><mesg></mesg></span><br>
+                        <div id="nb_sum_Mmgr2TAOutput"
+                            style="display: none; position: absolute; z-index: 205;"></div>
+                        </span>
+                        <p>
+                            <input name="nb_sum_Mmgr1_Title" class="hidden" onchange="if (checkValidTitle(this, document.getElementById('Lookup_titles_US').value)) { if (this.value!='') {document.getElementById('Mmgr_SPAN').style.display='inline';}}"
+                                value="">
+                            <input name="nb_sum_Mmgr1_PG" class="hidden" id="nb_sum_Mmgr1_PG" onchange="if (checkValidTitle(this, document.getElementById('Lookup_titles_US').value)) { if (this.value!='') {document.getElementById('Mmgr_SPAN').style.display='inline';}}"
+                                value="">
+                            <input name="nb_sum_Mmgr2_Title" class="hidden" onchange="checkValidTitle(this, document.getElementById('Lookup_titles_US').value);"
+                                value="">
+                            <input name="nb_sum_Mmgr2_PG" class="hidden" id="nb_sum_Mmgr2_PG" onchange="if (checkValidTitle(this, document.getElementById('Lookup_titles_US').value)) { if (this.value!='') {document.getElementById('Mmgr_SPAN').style.display='inline';}}"
+                                value="">
+                        </p>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="fieldlabel">*
+                    <font color="#00a000"><span id="BILLATTY_HELP"><help></help></span></font>Billing Attorney:</td>
+                <td>
+                    <input name="nb_sum_mbillaty_Select" class="fieldPrefill" id="nb_sum_mbillaty_Select" onkeyup="BillingAttyLookup(this)" onfocus='if (this.value=="Type Atty # OR Last Name") { this.value=""; this.style.color="black" ; this.style.fontStyle="normal"; }'
+                        onblur="if(this.value.length>0) checkSelectField(this);&#10;  " size="23" value="Type Atty # OR Last Name">
+                    <span
+                        class="smallnote">&lt;--type ahead:</span>
+                        <input name="nb_sum_mbillaty" tabindex="-1" class="readonly" id="nb_sum_mbillaty" onchange="document.getElementById('nb_sum_mbillaty_changed').value=&quot;Y&quot;;"
+                            size="6" readonly="true" value="">
+                        <input name="nb_sum_mbillaty_DESC" tabindex="-1" class="readonly" id="nb_sum_mbillaty_DESC" size="20" readonly="true" value="">                        <a tabindex="-1" class="nbi_link" href="javascript:clearFieldList('nb_sum_mbillaty;nb_sum_mbillaty_DESC;nb_sum_mbillaty_Title;nb_sum_mbillaty_ID')">Clear</a>                        <span class="fieldvalid" id="NB_SUM_MBILLATY_MESG"><mesg></mesg></span><br>
+                        <div id="nb_sum_mbillatyTAOutput"
+                            style="display: none; position: absolute; z-index: 205;"></div><br>
+
+                        <input name="nb_sum_mbillaty_Title" class="hidden" id="nb_sum_mbillaty_Title" onchange="checkValidTitle(this, document.getElementById('Lookup_titles_US').value);"
+                            value="">
+                        <input name="nb_sum_mbillaty_ID" class="hidden" value="">
+                        <input name="nb_sum_mbillaty_changed" class="hidden" value="">
+                </td>
+            </tr>
+
+            <tr>
+                <td class="fieldlabel">Attorney to Contact Regarding Conflict Issues:</td>
+                <td>
+                    <input name="nb_sum_mt_assatt_Select" class="fieldPrefill" id="nb_sum_mt_assatt_Select" onkeyup=" ConflictAttorneyLookup(this) "
+                        onfocus='if (this.value=="Type Atty # OR Last Name") { this.value=""; this.style.color="black" ; this.style.fontStyle="normal"; }'
+                        onblur="checkSelectField(this);&#10;  " size="23" value="Type Atty # OR Last Name">
+                    <span
+                        class="smallnote">&lt;--type ahead:</span>
+                        <input name="nb_sum_mt_assatt" tabindex="-1" class="readonly" id="nb_sum_mt_assatt" size="6" readonly="true" value="">
+                        <input name="nb_sum_mt_assatt_DESC" tabindex="-1" class="readonly" id="nb_sum_mt_assatt_DESC" size="20" readonly="true" value="">                        <a tabindex="-1" class="nbi_link" href="javascript:clearFieldList('nb_sum_mt_assatt;nb_sum_mt_assatt_DESC;nb_sum_mt_assatt_Title')">Clear</a>                        <span class="fieldvalid" id="NB_SUM_MT_ASSATT_MESG"><mesg></mesg></span><br>
+                        <div id="nb_sum_mt_assattTAOutput"
+                            style="display: none; position: absolute; z-index: 205;"></div><br>
+
+                        <input name="nb_sum_mt_assatt_Title" class="hidden" id="nb_sum_mt_assatt_Title" onchange="checkValidTitle(this, document.getElementById('Lookup_titles_US').value);"
+                            value="">
+                </td>
+            </tr>
+
+            <tr class="spacer">
+                <td class="fieldlabel">
+                    <font color="#00a000"><span id="MGRSUPSER_HELP"><help></help></span></font>Manager of Non-Legal Support Services</td>
+                <td>
+                    <table width="500" class="tablestandout">
+                        <tbody>
+                            <tr>
+                                <td>Is there a Manager of Non-Legal Support Services?<br>
+                                    <input name="%%Surrogate_wf_sum_nonlegmg_show" type="hidden" value="1"><label>
+<input name="wf_sum_nonlegmg_show" id="wf_sum_nonlegmg_show" onclick="if (document.getElementsByName('wf_sum_nonlegmg_show')[0].checked) {&#10;&#9;document.getElementById('wf_sum_nonlegmg_SPAN').style.display='inline';&#10;} else {&#10;&#9;document.getElementById('wf_sum_nonlegmg_SPAN').style.display='none';&#10;}" type="radio" value="Yes">Yes</label><label>
+<input name="wf_sum_nonlegmg_show" id="wf_sum_nonlegmg_show" onclick="if (document.getElementsByName('wf_sum_nonlegmg_show')[0].checked) {&#10;&#9;document.getElementById('wf_sum_nonlegmg_SPAN').style.display='inline';&#10;} else {&#10;&#9;document.getElementById('wf_sum_nonlegmg_SPAN').style.display='none';&#10;}" type="radio" checked="" value="No">No</label></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <span class="hidden" id="wf_sum_nonlegmg_SPAN">
+<input name="%%Surrogate_nb_sum_pmrw_nonlegmg" type="hidden" value="1">
+<select name="nb_sum_pmrw_nonlegmg" onchange='document.getElementById(this.name+"_DESC").value=this.options[this.selectedIndex].text;'>
+<option value="" selected="">-Select-
+<option value="35890">Bair, Sheila
+<option value="33123">Bell, Nathaniel J.
+<option value="31277">Brown, Ray H.
+<option value="32189">Burakoff, Nathan
+<option value="31282">Burakoff, Oscar B.
+<option value="35243">Chilton, Bart
+<option value="33050">Dasgupta, Joy
+<option value="35020">DeBoer, Joan
+<option value="30679">Dechsakulthorn, B.J.
+<option value="31690">Donovan, Sarah B.
+<option value="19982">Flignor, Paul
+<option value="30471">Guarin, John
+<option value="36983">Jain, Vineet
+<option value="30209">Karsevar, Claire
+<option value="35021">LaHood, Ray
+<option value="11899">Levy, David S
+<option value="11965">Loud, Ted
+<option value="33985">Lu, David
+<option value="37149">Macias Valdes, Antonio
+<option value="12032">Mitchell, George J.
+<option value="31281">Norton, D. Clarke
+<option value="36500">Panosian, Narbeh
+<option value="11640">Phelan, John C.
+<option value="35968">Roberti, Cliff
+<option value="19587">Segimon, Marta
+<option value="34034">Simmons, Joseph S.
+<option value="33121">Sotelo, Luis
+<option value="36312">Spencer, Ken
+<option value="35847">Turley, Paul
+<option value="36536">Vega, Jason S
+<option value="36501">Wang, Iris
+<option value="30263">Woolley, Jessica S.</option></select>
+<br>
+
+<input name="nb_sum_pmrw_nonlegmg_DESC" class="hidden" value="">
+</span>
+                </td>
+            </tr>
+
+            <tr class="spacer">
+                <td class="fieldlabel">* Additional Referral Information</td>
+                <td>
+                    <table width="500" class="tablestandout">
+                        <tbody>
+                            <tr>
+                                <td>Did the opportunity to work on this matter originate from a referral by Juan Carlos Merodio
+                                    Lopez?<br>
+                                    <input name="%%Surrogate_wf_sum_nonempl_referral_1" type="hidden" value="1"><label>
+<input name="wf_sum_nonempl_referral_1" type="radio" value="Y">Yes</label><label>
+<input name="wf_sum_nonempl_referral_1" type="radio" checked="" value="N">No</label><span class="fieldvalid" id="WF_SUM_NONEMPL_REFERRAL_1_MESG"><mesg></mesg></span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+
+            <tr class="spacer">
+                <td class="fieldlabel">Office:</td>
+                <td>
+                    <font size="1"> will default to the office of the billing attorney</font> - <span class="fieldvalid" id="WF_SUM_OFFICE_MESG"><mesg></mesg></span></td>
+            </tr>
+
+            <tr>
+                <td class="fieldlabel">Editor(s) - Origination Time:</td>
+                <td>cd12678 - 09/28/2016 02:31:31 PM (2016.06)
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+</body>
+
+</html>
