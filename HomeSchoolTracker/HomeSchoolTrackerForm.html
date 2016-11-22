@@ -128,6 +128,7 @@
                 var txtStudent = $('#entry_983069968').val();
                 var txtSubject = $('#entry_1814284914_Subject').val();
                 var listItems = [];
+                listItems += "<option value=''>--Select--</option>";
                 $(bookList).each(function(){
                     if (this.gsx$student.$t == txtStudent && this.gsx$subject.$t == txtSubject) 
                     {
