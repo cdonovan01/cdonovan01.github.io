@@ -154,10 +154,14 @@
         $(function () {
             $("#entry_1788218458_SchoolDate").datepicker({
                 dateFormat: 'yy-mm-dd'
-            });  //School Date field
+            });  
+			//School Date field
 
             $('#todaysdate').html(getTodaysDate());
-            $('#entry_1788218458_SchoolDate').val(getTodaysDate());
+			
+			if ($('#entry_1788218458_SchoolDate').val()=='') {
+            	$('#entry_1788218458_SchoolDate').val(getTodaysDate());
+			}
         });
 
         function getTodaysDate()
