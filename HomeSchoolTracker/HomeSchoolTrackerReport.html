@@ -1,0 +1,279 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>Homeschool Tracking</title>
+
+	<!-- CSS -->
+	<link href="CSS/bootstrap.min.css" rel="stylesheet" />
+	<link href="CSS/bootstrap-theme.min.css" rel="stylesheet" />
+	<!--<link href="css/style.css" rel="stylesheet" type="text/css" />-->
+	<link href="js/libs/jquery-ui/jquery-ui.css" rel="stylesheet" />
+
+
+	<!-- JQuery and Bootstrap Javascript Files-->
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<script type="text/javascript" src="js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="js/libs/jquery.validate.min.js"></script>
+	<script type="text/javascript" src="js/libs/jquery-ui/jquery-ui.js"></script>
+	<script type="text/javascript" src="js/script.js"></script>
+
+	<script type="text/javascript">
+	    var selectedStudent;
+        var bookList;
+        function updateRecordsView(student) {
+            //alert(student)
+			selectedStudent = student;
+            var url = "https://docs.google.com/spreadsheets/d/1KbEc960RT_lqJ7w6jyuKtoqTg_z2W71ScCVVmmLsn3Q/gviz/tq?tqx=out:html&tq=select+B,C,D,H,E,F+where+B=%22" + student + "%22+order+by+C+desc+limit+30"
+            $('#iframeRecords').attr("src", url);
+            $('#entry_983069968').val(student);
+            $('#pic').attr("src", "IMG/" + student + ".JPG");
+            $('.entryfield form-control').val('');
+            //$('#entry_1788218458_SchoolDate').val(getTodaysDate());
+            $('#entry_1814284914_Subject').val('');
+        }
+		function updateRecordsViewSubject(subject) {
+            //alert(subject)
+            var url = "https://docs.google.com/spreadsheets/d/1KbEc960RT_lqJ7w6jyuKtoqTg_z2W71ScCVVmmLsn3Q/gviz/tq?tqx=out:html&tq=select+B,C,D,H,E,F+where+B=%22" + selectedStudent + "%22+And+D=%22"+subject+"%22+order+by+C+desc+limit+30"
+            $('#iframeRecords').attr("src", url);
+        }
+
+        $(document).ready(function () {
+            $("#entryForm").validate();
+            // ID of the Google Spreadsheet
+            var spreadsheetID = "1E838uIN9FRlIOTM1iYbZ5g8PgnxZxKIUeKUs4AIKdCk";
+            try {
+                // Make sure it is public or set to Anyone with link can view 
+                var url = "https://spreadsheets.google.com/feeds/list/" + spreadsheetID + "/od6/public/values?alt=json";       
+                $.support.cors = true;
+                $.getJSON(url, function(data) {
+                //$.getJSON(url+ "?callback=?", function(data) {
+                    bookList = data.feed.entry;
+                });
+            } catch (e) {}
+
+        });
+
+
+        function getDDValues() {
+            var student = "";
+            $.getJSON("https://docs.google.com/spreadsheets/d/1KbEc960RT_lqJ7w6jyuKtoqTg_z2W71ScCVVmmLsn3Q/gviz/tq?tqx=out:json&tq=select+D,H,E,F+where+B=%"+student+"%22", function (data) {
+                var items = [];
+                $.each(data, function (key, val) {
+                    items.push("<li id='" + key + "'>" + val + "</li>");
+                });
+
+                $("<ul/>", {
+                    "class": "my-new-list",
+                    html: items.join("")
+                }).appendTo("body");
+            });
+        }
+        function loadBookValues() {
+            try {
+          
+                var txtStudent = $('#entry_983069968').val();
+                var txtSubject = $('#entry_1814284914_Subject').val();
+                var listItems = [];
+                listItems += "<option value=''>--Select--</option>";
+                $(bookList).each(function(){
+                    if (this.gsx$student.$t == txtStudent && this.gsx$subject.$t == txtSubject) 
+                    {
+                        listItems += "<option value='"+this.gsx$value.$t+"'>"+this.gsx$text.$t+"</option>";
+                    }
+                });
+                //Always add these options
+                listItems += "<option value='Other'>Other</option>";
+                listItems += "<option value='None'>None</option>";
+
+                $('#entry_723042042_TextBook').html(listItems);
+                $('#TextBook').show();
+
+            } catch (e) { alert(e); }
+        }
+        
+        
+        function checkFieldOther(obj) {
+            if (obj.options[obj.selectedIndex].text == "Other")
+            { $('#' + obj.id + '_Other_div').show(); } else { $('#' + obj.id + '_Other_div').hide(); $('#' + obj.id + '_Other').val(''); }
+        }
+
+        $(function () {
+            $("#entry_1788218458_SchoolDate").datepicker({
+                dateFormat: 'yy-mm-dd'
+            });  
+			//School Date field
+
+            $('#todaysdate').html(getTodaysDate());
+			
+			if ($('#entry_1788218458_SchoolDate').val()=='') {
+            	$('#entry_1788218458_SchoolDate').val(getTodaysDate());
+			}
+        });
+
+        function getTodaysDate()
+        { return $.datepicker.formatDate('yy-mm-dd', new Date()); }
+    </script>
+	<!-- end scripts -->
+
+	<style>
+		/* Remove the navbar's default margin-bottom and rounded borders */
+		
+		.navbar {
+			margin-bottom: 0;
+			border-radius: 0;
+		}
+		/* Set height of the grid so .sidenav can be 100% (adjust as needed) */
+		
+		.row.content {
+			height: 450px
+		}
+		/* Set gray background color and 100% height */
+		
+		.sidenav {
+			padding-top: 20px;
+			background-color: #f1f1f1;
+			height: 100%;
+		}
+		/* Set black background color, white text and some padding */
+		
+		footer {
+			background-color: #555;
+			color: white;
+			padding: 15px;
+		}
+		/* On small screens, set height to 'auto' for sidenav and grid */
+		
+		@media screen and (max-width: 767px) {
+			.sidenav {
+				height: auto;
+				padding: 15px;
+			}
+			.row.content {
+				height: auto;
+			}
+		}
+	</style>
+</head>
+
+<body>
+	<!-- Start Bootstrap Navbar -->
+	<nav class="navbar navbar-default">
+		<div class="container-fluid" style="background-color: #004070;color:white;">
+			<!-- Brand and toggle get grouped for better mobile display -->
+			<div class="navbar-header" style="background-color: #004070;color:white;">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+				<span class="hidden-xs hidden-sm"><a class="navbar-brand" href="index.html" style="background-color: #004070;color:white;">Donovan Homeschool Tracker</a></span>
+				<span class="hidden-md hidden-lg hidden-xl"><a class="navbar-brand" href="index.html" style="background-color: #004070;color:white;">Donovan Site</a></span>
+			</div>
+
+			<!-- Collect the nav links, forms, and other content for toggling -->
+			<div class="collapse navbar-collapse" id="navbar-collapse-1" style="background-color: #004070;color:white;">
+				<ul class="nav navbar-nav" style="background-color: #004070;color:white;">
+					<li><a href="HomeSchoolTrackerForm.html" style="background-color: #004070;color:white;">By Status</a></li>
+					<li runat="server" id="menuSummary" visible="false"><a href="HomeSchoolTrackerReport.html" style="background-color: #004070;color:white;">Summary</a></li>
+				</ul>
+
+				<!--<p class="navbar-text navbar-right" style="padding-right: 20px;">
+                        <asp:Label ID="txtWelcomeMesg" runat="server" Text="" Style="color: white;"></asp:Label>
+                    </p>-->
+			</div>
+			<!-- /.navbar-collapse -->
+		</div>
+		<!-- /.container-fluid -->
+	</nav>
+
+	<div class="container-fluid">
+		<form id="entryForm">
+
+			<h3>Donovan Home School Tracker</h3>
+			<h4>Today's Date: <span id="todaysdate"></span></h4>
+
+			<div class="row Questions">
+				<div class="col-xs-6 col-md-3 col-lg-2 form-group">
+					<label for="student">Student Name: *</label>
+					<div>
+						<input type="radio" name="student" class="required" value="Brenden" onclick="updateRecordsView(this.value)">Brenden<br>
+						<input type="radio" name="student" value="McKayla" onclick="updateRecordsView(this.value)">McKayla<br>
+						<input type="radio" name="student" value="Caiden" onclick="updateRecordsView(this.value)">Caiden<br>
+						<input type="radio" name="student" value="Samantha" onclick="updateRecordsView(this.value)">Samantha<br>
+						<input type="radio" name="student" value="Chris" onclick="updateRecordsView(this.value)">Chris<br>
+						<label class="error" for="student"></label>
+					</div>
+
+				</div>
+
+
+				<div class="col-xs-6 col-md-3  col-lg-2 form-group">
+					<label for="entry_1814284914_Subject">
+                                    Subject:
+                                </label>
+
+					<select id="entry_1814284914_Subject" class="required entryfield form-control" onchange="loadBookValues();updateRecordsViewSubject(this.value)"
+						title="Subject is required">
+                                    <option value="">Select</option>
+                                    <option value="Art">Art</option>
+                                    <option value="Bible">Bible</option>
+                                    <option value="English">English</option>
+                                    <option value="Health/PE">Health/PE</option>
+                                    <option value="SocialStudies">Social Studies (History/Geograhpy)</option>
+                                    <option value="Math">Math</option>
+                                    <option value="Music">Music</option>
+                                    <option value="Science">Science</option>
+                                    <option value="Spanish">Spanish</option>
+                                    <option value="Computer">Computer</option>
+                                    <option value="Typing">Typing</option>
+                                    <option value="Other">Other</option>
+                                </select>
+					<div style="display:none" id="entry_1814284914_Subject_Other_div">
+						<label for="entry_1814284914_Other">Other Subject:</label>
+						<input type="text" class="required entryfield form-control" name="entry.1814284914_Subject_Other" value="" id="entry_1814284914_Subject_Other"
+							title="Other Subject is Required" />
+					</div>
+				</div>
+				<div class="col-xs-6 col-md-6 col-lg-8 form-group">
+					<img style="width:150px" id="pic" src="" />
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-8 col-md-4 form-group">
+
+
+
+					<iframe id="iframeRecords" width="800" height="2000" src="https://docs.google.com/spreadsheets/d/1KbEc960RT_lqJ7w6jyuKtoqTg_z2W71ScCVVmmLsn3Q/gviz/tq?tqx=out:html&tq=select+B,C,D,H,E,F+order+by+C+desc+limit+200"
+						frameborder="0" marginheight="0" marginwidth="0"></iframe>
+				</div>
+			</div>
+
+		</form>
+
+	</div>
+
+
+	<iframe id="hidden_iframe" name="hidden_iframe" style="display:none"></iframe>
+	<form style="display:none" id="submitForm" action="https://docs.google.com/forms/d/13ag94IbQISNzXHxfauFeQt2_6GZtcuNj799ArCsyl6E/formResponse"
+		method="POST" target="hidden_iframe" onsubmit="sent_form=true">
+		Name
+		<input name="entry.983069968" value="" id="entry_983069968"> Student
+		<input name="entry.1788218458" value="" id="entry_1788218458"> Date
+		<input name="entry.1814284914" value="" id="entry_1814284914"> Subject
+		<input name="entry.1272761553" value="" id="entry_1272761553"> Entry Type
+		<input name="entry.723042042" value="" id="entry_723042042"> Text Book
+		<input name="entry.118763302" value="" id="entry_118763302"> Lesson
+		<input name="entry.590904944" value="" id="entry_590904944"> Additional Notes
+
+		<input id="btnPostToGoogle" type="submit" value="Add" /><input id="btnResetSubmitForm" type="reset" value="reset" />
+	</form>
+
+</body>
+
+</html>
