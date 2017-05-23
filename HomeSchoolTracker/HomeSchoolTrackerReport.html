@@ -28,7 +28,7 @@
         function updateRecordsView(student) {
             //alert(student)
 			selectedStudent = student;
-            var url = "https://docs.google.com/spreadsheets/d/1KbEc960RT_lqJ7w6jyuKtoqTg_z2W71ScCVVmmLsn3Q/gviz/tq?tqx=out:html&tq=select+B,C,D,H,E,F+where+B=%22" + student + "%22+order+by+C+desc+limit+30"
+            var url = "https://docs.google.com/spreadsheets/d/1KbEc960RT_lqJ7w6jyuKtoqTg_z2W71ScCVVmmLsn3Q/gviz/tq?tqx=out:html&tq=select+B,C,D,H,E,F+where+B=%22" + student + "%22+order+by+D,C+desc+limit+2000"
             $('#iframeRecords').attr("src", url);
             $('#entry_983069968').val(student);
             $('#pic').attr("src", "IMG/" + student + ".JPG");
@@ -38,7 +38,7 @@
         }
 		function updateRecordsViewSubject(subject) {
             //alert(subject)
-            var url = "https://docs.google.com/spreadsheets/d/1KbEc960RT_lqJ7w6jyuKtoqTg_z2W71ScCVVmmLsn3Q/gviz/tq?tqx=out:html&tq=select+B,C,D,H,E,F+where+B=%22" + selectedStudent + "%22+And+D=%22"+subject+"%22+order+by+C+desc+limit+30"
+            var url = "https://docs.google.com/spreadsheets/d/1KbEc960RT_lqJ7w6jyuKtoqTg_z2W71ScCVVmmLsn3Q/gviz/tq?tqx=out:html&tq=select+B,C,D,H,E,F+where+B=%22" + selectedStudent + "%22+And+D=%22"+subject+"%22+order+by+C+desc+limit+500"
             $('#iframeRecords').attr("src", url);
         }
 
@@ -246,10 +246,7 @@
 			</div>
 			<div class="row">
 				<div class="col-xs-8 col-md-4 form-group">
-
-
-
-					<iframe id="iframeRecords" width="800" height="2000" src="https://docs.google.com/spreadsheets/d/1KbEc960RT_lqJ7w6jyuKtoqTg_z2W71ScCVVmmLsn3Q/gviz/tq?tqx=out:html&tq=select+B,C,D,H,E,F+order+by+C+desc+limit+200"
+					<iframe id="iframeRecords" width="800" height="2000" src="https://docs.google.com/spreadsheets/d/1KbEc960RT_lqJ7w6jyuKtoqTg_z2W71ScCVVmmLsn3Q/gviz/tq?tqx=out:html&tq=select+B,C,D,H,E,F+order+by+B,D,C+desc+limit+2000"
 						frameborder="0" marginheight="0" marginwidth="0"></iframe>
 				</div>
 			</div>
